@@ -1,0 +1,71 @@
+name: AdvancedBans
+main: pl.kyku.AdvancedBans
+version: 0.8
+author: kyku & Gamer_lv
+website: http://mc-creative.nl/
+
+commands:
+    bancheck:
+        description: Check if a player has any previous bans
+        usage: /<command> <nick>
+    ban:
+        description: Ban player
+        usage: /<command> <nick> [time] [reason]
+        
+    unban:
+        description: Unban player
+        usage: /<command> <nick> [reason]
+        
+    kick:
+        description: Kick player
+        usage: /<command> <nick> [reason]
+    
+    banip:
+        description: Ban IP
+        usage: /<command> <IP> [time] [reason]
+    
+    unbanip:
+        description: Unban player based on IP
+        usage: /<command> <IP> [reason]
+    advReload:
+        description: Reload the config file. This does not start mysql banning.
+        usage: /<command>
+    checkbans:
+        description: Check bans for a player
+        usage: /<command> <nick>
+        
+permissions:
+    advbans.*:
+        description: Gives access to all AdvanceBans commands
+        children:
+            advbans.kick: true
+            advbans.ban: true
+            advbans.banip: true
+            advbans.unban: true
+            advbans.tmpban: true
+            advbans.advreload: true
+    advbans.kick:
+        description: Allows you to kick a user
+        default: op
+    advbans.ban:
+        description: Allows you to ban a user
+        default: op
+    advbans.banip:
+        description: Allows you to ban a user based on IP
+        default: op
+    advbans.unban:
+        description: Allows you to unban a user
+        default: op
+    advbans.unbanip:
+        description: Allows you to unban user based on ip
+        default: op
+    advbans.tmpban:
+        description: Allows you to TMP ban a player
+        default: op
+    advbans.check:
+        description: Allows you to check a player bans
+        default: op
+    advbans.advreload:
+        description: Allow reloading of the config file.
+        default: op
+  

@@ -1,0 +1,39 @@
+Strings:
+  Standard-reason: ' No reason was entered'
+  Unban-message: '&BLACK;[AdvBans]&GREEN; Player &TNAME; has been unbanned by &ANAME;'
+  Kick:
+    broadcast: '&RED;Admin: &ANAME; kicked &TNAME;. Reason:&REASON;.'
+    kickmsg: '&RED;You have been kicked! Because:&REASON;.'
+  Ban:
+    t-and-r-broadcast: '&RED;Admin: &ANAME; has banned &TNAME; for &TIME;min. Because:&REASON;.'
+    perm-kickmsg: '&RED;You have been banned from this server.'
+    only-time-broadcast: '&RED;Admin: &ANAME; has banned &TNAME; for &TIME;min.'
+    only-time-kickmsg: '&RED;Banned for &TIME; min.'
+    t-and-r-kickmsg: '&RED;Banned for &TIME;min. Reason:&REASON;.'
+    perm-broadcast: '&RED;Admin: &ANAME; has banned &TNAME;.'
+  Join:
+    Banned-reason-left: '&RED;Banned! Reason:&REASON; (Left: &LEFT;min.)'
+    Welcome-msg: '&GREEN;You have been unbanned. Welcome back!'
+    Banned-IP: '&RED;Your IP has been banned.&WHITE; Do not change nickname!'
+    Banned-reason: '&RED;You have been banned from this server. Reason:&REASON;.'
+  Error:
+    No-access: '&RED;You don''t have permissions'
+    Player-is-offline: '&RED;This player is offline'
+MySQL:
+    Use: false
+    User: 'bans'
+    Password: 'bansPassword'
+    Port: 3306
+    Host: localhost
+    Database: 'minecraft_bans'
+    table: ab_list
+    table-history: ab_history
+Settings:
+    Ban-nickname-and-IP: false
+    Welcome-message: true
+    Broadcast-kick-msg: true
+    Broadcast-ban-msg: true
+    Use-IP-history: true
+    Broadcast-unban-msg: true
+    defaultBanTime: 2880
+
