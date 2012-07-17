@@ -5,9 +5,6 @@ author: kyku & Gamer_lv
 website: http://mc-creative.nl/
 
 commands:
-    bancheck:
-        description: Check if a player has any previous bans
-        usage: /<command> <nick>
     ban:
         description: Ban player
         usage: /<command> <nick> [time] [reason]
@@ -27,9 +24,11 @@ commands:
     unbanip:
         description: Unban player based on IP
         usage: /<command> <IP> [reason]
+        
     advReload:
         description: Reload the config file. This does not start mysql banning.
         usage: /<command>
+        
     checkbans:
         description: Check bans for a player
         usage: /<command> <nick>
@@ -43,6 +42,7 @@ permissions:
             advbans.banip: true
             advbans.unban: true
             advbans.tmpban: true
+            advbans.check: true
             advbans.advreload: true
     advbans.kick:
         description: Allows you to kick a user

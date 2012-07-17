@@ -95,7 +95,9 @@ public class AdvancedBans extends JavaPlugin
 		
 		if( this.mysqlEnabled ){
 			
+			/*
 			//TODO: bukkit has this file build-in since build 1000, remove the dependency for that and later versions
+			 * FIXME: remove in/before version 0.9 if proven that the plugin is stable without it
 			final File file = new File("mysql-connector-java-bin.jar");
 			try {
 				if (!file.exists() || file.length() == 0) {
@@ -110,7 +112,7 @@ public class AdvancedBans extends JavaPlugin
 				errorAtLoading = true;
 				return;
 			}
-			
+			*/
 			
 			try {
 				String url = "jdbc:mysql://" + getConfig().getString("MySQL.Host") + ":" + getConfig().getString("MySQL.Port") + "/" + getConfig().getString("MySQL.Database");
@@ -135,9 +137,9 @@ public class AdvancedBans extends JavaPlugin
 		
 		//FIXME: move to the function checkTables()
 		//check if DB update is needed
-		Float currentVersion	= new Float( pdfFile.getVersion() ); //FIXME: This needs to be a static float. In the future we may want to run another upgrade of the DB
+		Float update1Version	= new Float( "0.8" ); //FIXME: This needs to be a static float. In the future we may want to run another upgrade of the DB
 		Float cfgVersion		= new Float ( AdvancedBans.config.getString( "version" ) );
-		if ( cfgVersion < currentVersion ){
+		if ( cfgVersion < update1Version ){
 			
 			if( this.mysqlEnabled ) {
 				log.info( "[AdvancedBans] Old config version found. Starting upgrade." );
@@ -176,29 +178,32 @@ public class AdvancedBans extends JavaPlugin
 		if (pool != null)
 			pool.closeConnections();
         log.info(pdfFile.getName()+" version "+pdfFile.getVersion()+" is disabled!");
-        
-        //this.saveConfig();
 	}
 
-	public String colorize(String announce) // from http://forums.bukkit.org/threads/xx.11955/
+	/**
+	 * Replace friendly colour names with acctual colour codes
+	 * @param text The text with friendly colour names
+	 * @return string text with correct colour codes
+	 */
+	public String colorize(String text) // from http://forums.bukkit.org/threads/xx.11955/
 	{
-		announce = announce.replaceAll("&AQUA;",		ChatColor.AQUA.toString());
-		announce = announce.replaceAll("&BLACK;",		ChatColor.BLACK.toString());
-		announce = announce.replaceAll("&BLUE;",		ChatColor.BLUE.toString());
-		announce = announce.replaceAll("&DARK_AQUA;",	ChatColor.DARK_AQUA.toString());
-		announce = announce.replaceAll("&DARK_BLUE;",	ChatColor.DARK_BLUE.toString());
-		announce = announce.replaceAll("&DARK_GRAY;",	ChatColor.DARK_GRAY.toString());
-		announce = announce.replaceAll("&DARK_GREEN;", 	ChatColor.DARK_GREEN.toString());
-		announce = announce.replaceAll("&DARK_PURPLE;",	ChatColor.DARK_PURPLE.toString());
-		announce = announce.replaceAll("&DARK_RED;",	ChatColor.DARK_RED.toString());
-		announce = announce.replaceAll("&GOLD;",		ChatColor.GOLD.toString());
-		announce = announce.replaceAll("&GRAY;",		ChatColor.GRAY.toString());
-		announce = announce.replaceAll("&GREEN;",		ChatColor.GREEN.toString());
-		announce = announce.replaceAll("&LIGHT_PURPLE;",ChatColor.LIGHT_PURPLE.toString());
-		announce = announce.replaceAll("&RED;",			ChatColor.RED.toString());
-		announce = announce.replaceAll("&WHITE;",		ChatColor.WHITE.toString());
-		announce = announce.replaceAll("&YELLOW;",		ChatColor.YELLOW.toString());
-		return announce;
+		text = text.replaceAll("&AQUA;",		ChatColor.AQUA.toString());
+		text = text.replaceAll("&BLACK;",		ChatColor.BLACK.toString());
+		text = text.replaceAll("&BLUE;",		ChatColor.BLUE.toString());
+		text = text.replaceAll("&DARK_AQUA;",	ChatColor.DARK_AQUA.toString());
+		text = text.replaceAll("&DARK_BLUE;",	ChatColor.DARK_BLUE.toString());
+		text = text.replaceAll("&DARK_GRAY;",	ChatColor.DARK_GRAY.toString());
+		text = text.replaceAll("&DARK_GREEN;", 	ChatColor.DARK_GREEN.toString());
+		text = text.replaceAll("&DARK_PURPLE;",	ChatColor.DARK_PURPLE.toString());
+		text = text.replaceAll("&DARK_RED;",	ChatColor.DARK_RED.toString());
+		text = text.replaceAll("&GOLD;",		ChatColor.GOLD.toString());
+		text = text.replaceAll("&GRAY;",		ChatColor.GRAY.toString());
+		text = text.replaceAll("&GREEN;",		ChatColor.GREEN.toString());
+		text = text.replaceAll("&LIGHT_PURPLE;",ChatColor.LIGHT_PURPLE.toString());
+		text = text.replaceAll("&RED;",			ChatColor.RED.toString());
+		text = text.replaceAll("&WHITE;",		ChatColor.WHITE.toString());
+		text = text.replaceAll("&YELLOW;",		ChatColor.YELLOW.toString());
+		return text;
 	}
 	
 	
@@ -216,6 +221,10 @@ public class AdvancedBans extends JavaPlugin
 	    }
     }
     
+    /**
+     * Wrapper to load and get the file based bans 
+     * @return The bans file object
+     */
 	protected FileConfiguration getBansConfig() {
 	    if (bansConfig == null) {
 	        loadBans();
@@ -224,6 +233,9 @@ public class AdvancedBans extends JavaPlugin
 	    return bansConfig;
 	}
 
+	/**
+	 * Save file based bans to file
+	 */
 	protected void saveBans() {
 		if (bansConfig == null || bansConfig == null) {
 			return;
@@ -241,6 +253,10 @@ public class AdvancedBans extends JavaPlugin
 		AdvancedBans.config.options().copyDefaults(true);
 	}
 	
+	/**
+	 * Check tables to see if they need to be created
+	 * @return boolean
+	 */
 	private boolean checkTables() {
 		final Connection conn = getConnection();
 		Statement state = null;
@@ -287,7 +303,7 @@ public class AdvancedBans extends JavaPlugin
 		return false;
 	}
 	
-	
+
 	public boolean onCommand(CommandSender player, Command cmd, String commandLabel, String[] args) {
 		
 		//boolean perm = false;//(sender instanceof ConsoleCommandSender);
@@ -316,6 +332,8 @@ public class AdvancedBans extends JavaPlugin
 						Statement state = null;
 	
 			    		ResultSet rs;
+			    		ResultSet activeBans;
+			    		String message;
 						if (conn == null){
 							
 							player.sendMessage(ChatColor.BLACK + "[AdvancedBans]" + ChatColor.RED + "[MYSQL] Connection error!");
@@ -324,12 +342,17 @@ public class AdvancedBans extends JavaPlugin
 						try {
 							state = conn.createStatement();
 							
+							//TODO: rewrite section to list the last 5 a 6 ( user config? ) bans of \player\. With a tot at top
+							
 							String safenick = args[0].toLowerCase().replaceAll("'", "\"");
 				    		rs = state.executeQuery("SELECT COUNT(id) as count FROM `"+getConfig().getString("MySQL.table")+"` WHERE `nick` = '"+safenick+"'");
 				    		
 				    		if ( rs.next() ) {
-				    			//TODO: add active bans
-				    			player.sendMessage("The player "+safenick+" has "+ rs.getInt("count") +" ban(s)");
+				    			message = "The player "+safenick+" has "+ rs.getInt("count") +" ban(s)";
+					    		activeBans = state.executeQuery("SELECT COUNT(id) as count FROM `"+getConfig().getString("MySQL.table")+"` WHERE `nick` = '"+safenick+"' AND `status` = 1");
+				    			if ( activeBans.next() )
+				    				message += " of which " + activeBans.getInt("count") +" ban(s) are active";
+				    			player.sendMessage( message );
 				    		}
 				    		
 						} catch (final SQLException ex) {
