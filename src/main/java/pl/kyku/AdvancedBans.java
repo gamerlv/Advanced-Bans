@@ -138,7 +138,7 @@ public class AdvancedBans extends JavaPlugin
 		//FIXME: move to the function checkTables()
 		//check if DB update is needed
 		Float update1Version	= new Float( "0.8" ); //FIXME: This needs to be a static float. In the future we may want to run another upgrade of the DB
-		Float cfgVersion		= new Float ( AdvancedBans.config.getString( "version" ) );
+		Float cfgVersion		= new Float ( AdvancedBans.config.getString( "version", pdfFile.getVersion() ) );
 		if ( cfgVersion < update1Version ){
 			
 			if( this.mysqlEnabled ) {
@@ -251,6 +251,7 @@ public class AdvancedBans extends JavaPlugin
 	protected void loadConfig(){
 		AdvancedBans.config = this.getConfig().getRoot();
 		AdvancedBans.config.options().copyDefaults(true);
+		this.saveConfig();
 	}
 	
 	/**
@@ -281,7 +282,7 @@ public class AdvancedBans extends JavaPlugin
 			}
 			if (!dbm.getTables(null, null, getConfig().getString("MySQL.table"), null).next())	{
 				log.log(Level.INFO, "[AdvancedBans] Creating table "+getConfig().getString("MySQL.table")+".");
-				state.execute("CREATE TABLE  `"+getConfig().getString("MySQL.table")+"` (`id` INT( 10 ) NOT NULL AUTO_INCREMENT ,`nick` VARCHAR( 64 ) NOT NULL ,`adminnick` VARCHAR( 64 ) NOT NULL ,`ip` VARCHAR( 35 ) NOT NULL ,`banfrom` INT( 8 ) NOT NULL ,`banto` INT( 8 ) NOT NULL ,`reason` VARCHAR( 128 ) NOT NULL, unbannick` VARCHAR(64) NULL, unbanreason` VARCHAR(64) NULL, `status` INT( 1 ) NOT NULL ,PRIMARY KEY (  `id` ));");
+				state.execute("CREATE TABLE  `"+getConfig().getString("MySQL.table")+"` (`id` INT( 10 ) NOT NULL AUTO_INCREMENT ,`nick` VARCHAR( 64 ) NOT NULL ,`adminnick` VARCHAR( 64 ) NOT NULL ,`ip` VARCHAR( 35 ) NOT NULL ,`banfrom` INT( 8 ) NOT NULL ,`banto` INT( 8 ) NOT NULL ,`reason` VARCHAR( 128 ) NOT NULL, `unbannick` VARCHAR(64) NULL, `unbanreason` VARCHAR(64) NULL, `status` INT( 1 ) NOT NULL ,PRIMARY KEY (  `id` ));");
 				if (!dbm.getTables(null, null, getConfig().getString("MySQL.table"), null).next())
 					return false;
 			}		
@@ -675,7 +676,7 @@ public class AdvancedBans extends JavaPlugin
 						//TODO: This should better indicate that it's about tmp VS perm banning rights
 						if ( czas == "0" && ! player.hasPermission( "advbans.ban" ) ){
 							player.sendMessage( getConfig().getString("Strings.Ban.No-access", ChatColor.RED + "You don't have permissions" ) );
-							return true;
+							return true;											//FIXME: This make it so BOTH are req to temp ban a player
 						} else if ( Integer.parseInt( czas ) > 0  && ( ! player.hasPermission( "advbans.ban" ) || ! player.hasPermission( "advbans.tmpban" ) ) ) {
 							//tmp banning
 							player.sendMessage( getConfig().getString("Strings.Ban.No-access", ChatColor.RED + "You don't have permissions" ) );

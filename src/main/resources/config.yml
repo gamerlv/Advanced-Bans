@@ -36,4 +36,4 @@ Settings:
     Use-IP-history: true
     Broadcast-unban-msg: true
     defaultBanTime: 2880
-
+version: 0.8

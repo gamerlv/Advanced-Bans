@@ -40,7 +40,7 @@ public class AdvancedBansPluginPlayerListener implements Listener
     	if(pokazac.contains(pl)){
     		while (pokazac.remove(pl));
     	
-			pl.sendMessage(plugin.colorize(plugin.getConfig().getString("Strings.Join.Welcome-msg")));
+			pl.sendMessage(plugin.colorize(plugin.getConfig().getString("Strings.Join.Welcome-msg", "&GREEN;You have been unbanned. Welcome back!")));
     	} else if( plugin.mysqlEnabled ){
     		Connection conn = plugin.getConnection();
     		Statement state = null;
@@ -54,19 +54,23 @@ public class AdvancedBansPluginPlayerListener implements Listener
         		rs = state.executeQuery("SELECT * FROM `"+plugin.getConfig().getString("MySQL.table-history")+"` WHERE `name` = '"+safenick+"'");
     			if(!rs.next()){
 	    		//	int id = rs.getInt("id");
-	    			PreparedStatement pstmt = conn.prepareStatement("INSERT INTO `"+plugin.getConfig().getString("MySQL.table-history")+"` (`id`, `name`, `ip`) VALUES (NULL, ?, ?);");
+	    			PreparedStatement pstmt = conn.prepareStatement("INSERT INTO `"+plugin.getConfig().getString("MySQL.table-history")+"` (`id`, `name`, `ip`) VALUES (NULL, ?, ?);", Statement.RETURN_GENERATED_KEYS );
 	    			
 	    			pstmt.setString(1,safenick);
 	    			pstmt.setString(2,ip);
 
 	    			pstmt.execute();//executeUpdate();
 	    			
+	    			/* This was custom code for MCC only.
+	    			 * TODO: remove if not going to be used
 	    		 	int plyNth = pstmt.getGeneratedKeys().getInt(1);
 	    			if ( plyNth == 3000 ) {
 	    				pl.sendMessage( "Congratulations! You are our " + ChatColor.DARK_RED +  plyNth + "th player!" );
 	    			} else{
 	    				pl.sendMessage( "Welcome new player! You are our " +  plyNth + "th player!" );
 	    			}
+	    			*/
+	    			
 	    			pstmt.close();
 	    			
     				AdvancedBans.log.log(Level.INFO,safenick+" - first join IP: "+ip);
@@ -98,7 +102,7 @@ public class AdvancedBansPluginPlayerListener implements Listener
 				
     			if(czasdo == 0 || czasdo > teraz){
     				
-    				pl.kickPlayer(plugin.colorize(plugin.getConfig().getString("Strings.Join.Banned-IP")));
+    				pl.kickPlayer(plugin.colorize(plugin.getConfig().getString("Strings.Join.Banned-IP", "&RED;Your IP has been banned.&WHITE; Do not change nickname!")));
                 	//pl.sendMessage("masz bana [ip]");
                 	break;
     			}
@@ -131,7 +135,7 @@ public class AdvancedBansPluginPlayerListener implements Listener
                     for (String fullAddress : stringList) {
                         if (fullAddress.equalsIgnoreCase(pl.getAddress().getAddress().getHostAddress())) {
                            //ban ip
-                        	pl.kickPlayer(plugin.colorize(plugin.getConfig().getString("Strings.Join.Banned-IP")));
+                        	pl.kickPlayer(plugin.colorize(plugin.getConfig().getString("Strings.Join.Banned-IP", "&RED;Your IP has been banned.&WHITE; Do not change nickname!")));
                         	//pl.sendMessage("masz bana [ip]");
                         	break;
                         }
@@ -174,7 +178,7 @@ public class AdvancedBansPluginPlayerListener implements Listener
     			if(czasdo == 0){
     				String msg = "";
     				String powod = rs.getString("reason");
-        			msg = plugin.getConfig().getString("Strings.Join.Banned-reason");
+        			msg = plugin.getConfig().getString("Strings.Join.Banned-reason", "&RED;You have been banned from this server. Reason:&REASON;.");
 					msg = msg.replaceAll("&REASON;", powod);
 					msg = plugin.colorize(msg);
 					
@@ -186,7 +190,7 @@ public class AdvancedBansPluginPlayerListener implements Listener
     				String powod = rs.getString("reason");
     				long zostalo = (czasdo-teraz)/60+1;
     				
-					msg = plugin.getConfig().getString("Strings.Join.Banned-reason-left");
+					msg = plugin.getConfig().getString("Strings.Join.Banned-reason-left", "&RED;Banned! Reason:&REASON; (Left: &LEFT;min.)");
         			msg = msg.replaceAll("&REASON;", powod);
         			
         			msg = msg.replaceAll("&LEFT;", String.valueOf(zostalo));
@@ -245,23 +249,10 @@ public class AdvancedBansPluginPlayerListener implements Listener
         		long unixTime = System.currentTimeMillis() / 1000L;
         		long zostalo = Long.valueOf(slist.get(1));  //remaining time
         		if(zostalo == 0){
-        		
-        			//for (Player playerdwa : plugin.getServer().getOnlinePlayers())
-					//	playerdwa.sendMessage(ChatColor.RED+"Player "+pl.getName()+" was kicked because have an active ban.");
-        			/*
+        			//player banned for ever, don display time left
         			
-        			config.setProperty("Advanced Bans.Strings.Join.Banned reason","&RED;You have been banned from this server. Reason:&REASON;.");
-		            config.setProperty("Advanced Bans.Strings.Join.Banned reason-left","&RED;Banned! Reason:&REASON;&DARK_RED; (Left: &LEFT;min.)");
-		            config.setProperty("Advanced Bans.Strings.Join.Welcome msg","&GREEN;You have been unbanned. Welcome back!");
-		            config.setProperty("Advanced Bans.Strings.Join.Banned-IP","&RED;Your IP has been banned.&WHITE; Do not change nickname!");
-		            
-				 	msg = config.getString("Advanced Bans.Strings.Kick.broadcast");
-					msg = msg.replaceAll("&ANAME;", name);
-					msg = msg.replaceAll("&TNAME;", cel.getDisplayName());
-					msg = colorize(msg.replaceAll("&REASON;", powodd));
-        			 */
         			String msg = "";
-        			msg = plugin.getConfig().getString("Strings.Join.Banned-reason");
+        			msg = plugin.getConfig().getString("Strings.Join.Banned-reason", "&RED;You have been banned from this server. Reason:&REASON;.");
 					msg = msg.replaceAll("&REASON;", powod);
 					msg = plugin.colorize(msg);
 					
@@ -271,11 +262,10 @@ public class AdvancedBansPluginPlayerListener implements Listener
 					zostalo = (zostalo-unixTime)/60+1;
 					if(zostalo>0)
 					{
-						//for (Player playerdwa : this.getServer().getOnlinePlayers())
-						//		playerdwa.sendMessage(ChatColor.RED+"Gracz "+pl.getName()+" zostal wyrzucony, poniewaz ma aktywnego bana.");
+
 						String msg = "";
 	        		
-						msg = plugin.getConfig().getString("Strings.Join.Banned-reason-left");
+						msg = plugin.getConfig().getString("Strings.Join.Banned-reason-left", "&RED;Banned! Reason:&REASON; (Left: &LEFT;min.)");
 	        			msg = msg.replaceAll("&REASON;", powod);
 	        			
 	        			msg = msg.replaceAll("&LEFT;", String.valueOf(zostalo));
@@ -295,7 +285,7 @@ public class AdvancedBansPluginPlayerListener implements Listener
         	
         	}
         }/* else {
-        
+        	//stuff here would run if there wasn't a FILE ban
         
         }*/
     	}
