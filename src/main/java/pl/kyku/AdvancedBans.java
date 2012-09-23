@@ -675,13 +675,16 @@ public class AdvancedBans extends JavaPlugin
 						
 						//TODO: This should better indicate that it's about tmp VS perm banning rights
 						if ( czas == "0" && ! player.hasPermission( "advbans.ban" ) ){
+							//perm bans
 							player.sendMessage( getConfig().getString("Strings.Ban.No-access", ChatColor.RED + "You don't have permissions" ) );
-							return true;											//FIXME: This make it so BOTH are req to temp ban a player
-						} else if ( Integer.parseInt( czas ) > 0  && ( ! player.hasPermission( "advbans.ban" ) || ! player.hasPermission( "advbans.tmpban" ) ) ) {
+							return true;											
+						} else if ( Integer.parseInt( czas ) > 0  && ! player.hasPermission( "advbans.tmpban" ) && ! player.hasPermission( "advbans.ban" )  ) {
 							//tmp banning
 							player.sendMessage( getConfig().getString("Strings.Ban.No-access", ChatColor.RED + "You don't have permissions" ) );
 							return true;
 						}
+						
+						
 						
 
 						kickmsg = getConfig().getString("Strings.Ban.only-time-kickmsg", "Nothing configured. Please check your config or report this bug." );
