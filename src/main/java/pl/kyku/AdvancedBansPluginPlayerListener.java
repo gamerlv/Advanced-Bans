@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
-import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

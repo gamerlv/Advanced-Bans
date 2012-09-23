@@ -370,7 +370,7 @@ public class AdvancedBans extends JavaPlugin
 						}
 				} else  player.sendMessage("[AdvancedBans] Currently only supported on MySQL.");
 				} else return false; // we're missing some args
-			}//ennd of permission
+			}//end of permission
 		return true;
 		}
 		if (commandLabel.equalsIgnoreCase("kick")) {
