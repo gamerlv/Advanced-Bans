@@ -368,9 +368,9 @@ public class AdvancedBans extends JavaPlugin
 								log.log(Level.SEVERE, "[AdvancedBans] SQL problem (exception) when closing the connection", ex);
 							}
 						}
-				} else  player.sendMessage("[AdvancedBans] Currently only supported on MySQL.");
+				} else  player.sendMessage("[AdvancedBans] Currently only supported on MySQL."); //FIXME: add support for flat file checks
 				} else return false; // we're missing some args
-			}//end of permission
+			} else player.sendMessage( colorize(getConfig().getString("Strings.Error.No-access", "&RED;No access")) );  //end of permission
 		return true;
 		}
 		if (commandLabel.equalsIgnoreCase("kick")) {
@@ -382,10 +382,10 @@ public class AdvancedBans extends JavaPlugin
 						
 						String msg = "";
 			            String kickmsg = "";
-			            String powodd = getConfig().getString("Strings.Standard-reason", " ");
+			            String powodd = getConfig().getString("Strings.Standard-reason", " HEIL ADVANCED BANS");
 			           
 						
-						if(args.length>1){ // powod
+						if(args.length>1){ // powod //reasons
 							powodd = "";
 							for( int a=1; a<args.length;a++)powodd += " "+args[a];
 						}
@@ -418,7 +418,7 @@ public class AdvancedBans extends JavaPlugin
 						player.sendMessage(colorize(getConfig().getString("Strings.Error.Player-is-offline", "[AdvancedBans] Player is offline")));
 					}
 				} else player.sendMessage("Usage: /kick <nick> [reason]");
-			} else player.sendMessage(colorize(getConfig().getString("Strings.Error.No-access")));
+			} else player.sendMessage( colorize(getConfig().getString("Strings.Error.No-access", "&RED;No access")) );
 			return true;
 		}
 		if (commandLabel.equalsIgnoreCase("unbanip")) {
